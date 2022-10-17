@@ -15,14 +15,14 @@ public class Main {
 
     while (!choice.equals("quit")) {
       System.out.print(
-        "\nMain Menu \n1. create \n2. edit \n3. delete \n4. view \n5. search person \n6. quit \nEnter your choice: ");
+        "\nMain Menu \n1. create \n2. edit \n3. delete \n4. view \n5. search persons \n6. display persons \n7. quit \nEnter your choice: ");
       choice = SC.nextLine().trim().toLowerCase();
 
       switch (choice) {
         case "add":
         case "1":
           AddressBook a = new AddressBook();
-          System.out.print("Enter a name for your addressbook ");
+          System.out.print("Enter a name for your addressbook: ");
           String name = SC.nextLine();
           if (addressBookList.get(name) != null) {
             System.out.println("address book '" + name + "' already exists. enter a different name.");
@@ -58,11 +58,17 @@ public class Main {
         case "search":
         case "5":
           a = new AddressBook();
-          a.search(addressBookList);
+          a.searchDisplayMenu(addressBookList, "search");
+          break;
+
+        case "display":
+        case "6":
+          a = new AddressBook();
+          a.searchDisplayMenu(addressBookList, "display");
           break;
 
         case "quit":
-        case "6":
+        case "7":
           choice = "quit";
           break;
 

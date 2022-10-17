@@ -12,6 +12,9 @@ public class AddressBook {
   static final Scanner SC = new Scanner(System.in);
 
   ArrayList<Contact> contacts = new ArrayList<>();
+  static Map<String, String> cityDictionary = new HashMap<>();
+  static Map<String, String> stateDictionary = new HashMap<>();
+
   String name;
 
   public void menu(AddressBook a) {
@@ -76,9 +79,14 @@ public class AddressBook {
       System.out.println("Here's whats been added: " + c.fName + " " + c.lName + " " + c.address + " " + c.city + " "
         + c.state + " " + c.email + " " + c.zip + " " + c.phNum);
       contacts = c.addContact(contacts, c);
+
+      AddressBook.cityDictionary.put(c.fName, c.city);
+      AddressBook.stateDictionary.put(c.fName, c.state);
+
     } catch (InputMismatchException e) {
       System.out.println("Enter a numeric value for zip code and phone number next time.");
     }
+
   }
 
   public HashMap<String, AddressBook> viewEditDelete(HashMap<String, AddressBook> addressBookList, String s) {
@@ -100,27 +108,27 @@ public class AddressBook {
     }
 
     switch (s) {
-    case "view":
-      if (addressBookList.get(name).contacts.size() < 1) {
-        System.out.println("There are no contacts in ." + name + ".");
-      } else {
-        System.out.print("AdressBook name: " + name + "\t\t\t Contacts: ");
-        System.out.print(addressBookList.get(name) + "\n");
-      }
+      case "view":
+        if (addressBookList.get(name).contacts.size() < 1) {
+          System.out.println("There are no contacts in ." + name + ".");
+        } else {
+          System.out.print("AdressBook name: " + name + "\t\t\t Contacts: ");
+          System.out.print(addressBookList.get(name) + "\n");
+        }
 
-      System.out.print("do you want to edit " + name + "(y/n): ");
-      String ch = SC.nextLine().trim().toLowerCase();
-      if (ch.contains("y")) menu(addressBookList.get(name));
-      break;
+        System.out.print("do you want to edit " + name + "(y/n): ");
+        String ch = SC.nextLine().trim().toLowerCase();
+        if (ch.contains("y")) menu(addressBookList.get(name));
+        break;
 
-    case "edit":
-      menu(addressBookList.get(name));
-      break;
+      case "edit":
+        menu(addressBookList.get(name));
+        break;
 
-    case "delete":
-      addressBookList.remove(name);
-      System.out.println(name + " has been deleted.");
-      break;
+      case "delete":
+        addressBookList.remove(name);
+        System.out.println(name + " has been deleted.");
+        break;
     }
 
     return addressBookList;
@@ -130,45 +138,75 @@ public class AddressBook {
     return !contacts.stream().anyMatch(con -> con.equals(c));
   }
 
-  public void search(HashMap<String, AddressBook> addressBookList) {
-
+  void searchDisplayMenu(HashMap<String, AddressBook> addressBookList, String str) {
     if (addressBookList.size() < 1) {
-      System.out.println(
-        "the addressbook list happens to be empty. we suggest you ADD a few CONTACTS before you try our search operations.");
+      System.out
+      .println("the addressbook list happens to be empty. we suggest you ADD a few CONTACTS before you try our " + str
+        + " operation.");
       return;
     }
+
+    String capStr = str.substring(0, 1).toUpperCase() + str.substring(1);
     String choice = "";
 
     do {
-      System.out.print("\nSearch Menu \n1. search by city \n2. search by state \n3. quit \nEnter your choice: ");
+      System.out.print(
+        "\n" + capStr + " Menu \n1. " + str + " by city \n2. " + str + " by state \n3. quit \nEnter your choice: ");
+
       choice = SC.nextLine().trim().toLowerCase();
+      switch (str) {
+        case "search":
+          switch (choice) {
+            case "1":
+            case "city":
+              searchByCity(addressBookList);
+              break;
 
-      switch (choice) {
-        case "1":
-        case "city":
-          searchByCity(addressBookList);
+            case "2":
+            case "state":
+              searchByState(addressBookList);
+              break;
+
+            case "3":
+            case "quit":
+              choice = "quit";
+              System.out.println("quitting " + str + " menu...");
+              break;
+
+            default:
+              System.out.println("that didnt match any choice, try again");
+              break;
+          }
           break;
 
-        case "2":
-        case "state":
-          searchByState(addressBookList);
-          break;
+        case "display":
+          switch (choice) {
+            case "1":
+            case "city":
+              displayByCity();
+              break;
 
-        case "3":
-        case "quit":
-          choice = "quit";
-          System.out.println("quitting search menu...");
-          break;
+            case "2":
+            case "state":
+              displayByState();
+              break;
 
-        default:
-          System.out.println("that didnt match any choice, try again");
-          break;
+            case "3":
+            case "quit":
+              choice = "quit";
+              System.out.println("quitting " + str + " menu...");
+              break;
+
+            default:
+              System.out.println("that didnt match any choice, try again");
+              break;
+          }
+
       }
     } while (!choice.equals("quit"));
-
   }
 
-  public void searchByCity(HashMap<String, AddressBook> addressBookList) {
+  private void searchByCity(HashMap<String, AddressBook> addressBookList) {
     System.out.print("enter the city to search people in: ");
     String cityToSearch = SC.nextLine();
     List<String> peopleOfThatCity = new ArrayList<>();
@@ -186,7 +224,7 @@ public class AddressBook {
     else System.out.println("we couldnt find any people from '" + cityToSearch + "' city in the addressbook list.");
   }
 
-  public void searchByState(HashMap<String, AddressBook> addressBookList) {
+  private void searchByState(HashMap<String, AddressBook> addressBookList) {
     System.out.print("enter the city to search people in: ");
     String stateToSearch = SC.nextLine();
     List<String> peopleOfThatState = new ArrayList<>();
@@ -202,6 +240,29 @@ public class AddressBook {
     if (peopleOfThatState.size() > 0)
       System.out.println("people from '" + stateToSearch + "' state are: " + peopleOfThatState);
     else System.out.println("we couldnt find any people from '" + stateToSearch + "' state in the addressbook list.");
+  }
+
+  private void displayByCity() {
+    List<String> cityList = AddressBook.cityDictionary.values().stream().distinct().collect(Collectors.toList());
+
+    for(String city : cityList) {
+      System.out.print("people from city '" + city + "': ");
+      AddressBook.cityDictionary.entrySet().stream().filter(en -> en.getValue().equalsIgnoreCase(city))
+      .forEach(en -> System.out.print(en.getKey() + ", "));
+      System.out.println();
+    }
+  }
+
+  private void displayByState() {
+    List<String> stateList = AddressBook.stateDictionary.values().stream().distinct().collect(Collectors.toList());
+
+    for(String state : stateList) {
+      System.out.print("people from state '" + state + "': ");
+      AddressBook.stateDictionary.entrySet().stream().filter(entry -> entry.getValue().equalsIgnoreCase(state))
+      .forEach(entry -> System.out.print(entry.getKey() + ", "));
+      System.out.println();
+
+    }
   }
 
   @Override
