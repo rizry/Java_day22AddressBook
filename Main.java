@@ -14,7 +14,8 @@ public class Main {
     String choice = "add";
 
     while (!choice.equals("quit")) {
-      System.out.print("\nMain Menu \n1. create \n2. edit \n3. delete \n4. view \n5. quit \nEnter your choice: ");
+      System.out.print(
+        "\nMain Menu \n1. create \n2. edit \n3. delete \n4. view \n5. search person \n6. quit \nEnter your choice: ");
       choice = SC.nextLine().trim().toLowerCase();
 
       switch (choice) {
@@ -54,8 +55,14 @@ public class Main {
           addressBookList = a.viewEditDelete(addressBookList, "view");
           break;
 
-        case "quit":
+        case "search":
         case "5":
+          a = new AddressBook();
+          a.search(addressBookList);
+          break;
+
+        case "quit":
+        case "6":
           choice = "quit";
           break;
 
