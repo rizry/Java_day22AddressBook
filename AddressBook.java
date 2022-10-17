@@ -27,38 +27,38 @@ public class AddressBook {
       choice = SC.nextLine().trim().toLowerCase();
 
       switch (choice) {
-        case "add":
-        case "1":
-          Contact c = new Contact();
-          addContact(c);
-          break;
+      case "add":
+      case "1":
+        Contact c = new Contact();
+        addContact(c);
+        break;
 
-        case "edit":
-        case "2":
-          c = new Contact();
-          contacts = c.showEditDelete(contacts, "edit");
-          break;
+      case "edit":
+      case "2":
+        c = new Contact();
+        contacts = c.showEditDelete(contacts, "edit");
+        break;
 
-        case "delete":
-        case "3":
-          c = new Contact();
-          contacts = c.showEditDelete(contacts, "delete");
-          break;
+      case "delete":
+      case "3":
+        c = new Contact();
+        contacts = c.showEditDelete(contacts, "delete");
+        break;
 
-        case "show":
-        case "4":
-          c = new Contact();
-          contacts = c.showEditDelete(contacts, "show");
-          break;
+      case "show":
+      case "4":
+        c = new Contact();
+        contacts = c.showEditDelete(contacts, "show");
+        break;
 
-        case "quit":
-        case "5":
-          choice = "quit";
-          break;
+      case "quit":
+      case "5":
+        choice = "quit";
+        break;
 
-        default:
-          System.out.println("that didnt match any choice, try again");
-          break;
+      default:
+        System.out.println("that didnt match any choice, try again");
+        break;
       }
     }
 
@@ -108,27 +108,27 @@ public class AddressBook {
     }
 
     switch (s) {
-      case "view":
-        if (addressBookList.get(name).contacts.size() < 1) {
-          System.out.println("There are no contacts in ." + name + ".");
-        } else {
-          System.out.print("AdressBook name: " + name + "\t\t\t Contacts: ");
-          System.out.print(addressBookList.get(name) + "\n");
-        }
+    case "view":
+      if (addressBookList.get(name).contacts.size() < 1) {
+        System.out.println("There are no contacts in ." + name + ".");
+      } else {
+        System.out.print("AdressBook name: " + name + "\t\t\t Contacts: ");
+        System.out.print(addressBookList.get(name) + "\n");
+      }
 
-        System.out.print("do you want to edit " + name + "(y/n): ");
-        String ch = SC.nextLine().trim().toLowerCase();
-        if (ch.contains("y")) menu(addressBookList.get(name));
-        break;
+      System.out.print("do you want to edit " + name + "(y/n): ");
+      String ch = SC.nextLine().trim().toLowerCase();
+      if (ch.contains("y")) menu(addressBookList.get(name));
+      break;
 
-      case "edit":
-        menu(addressBookList.get(name));
-        break;
+    case "edit":
+      menu(addressBookList.get(name));
+      break;
 
-      case "delete":
-        addressBookList.remove(name);
-        System.out.println(name + " has been deleted.");
-        break;
+    case "delete":
+      addressBookList.remove(name);
+      System.out.println(name + " has been deleted.");
+      break;
     }
 
     return addressBookList;
@@ -140,9 +140,8 @@ public class AddressBook {
 
   void searchDisplayMenu(HashMap<String, AddressBook> addressBookList, String str) {
     if (addressBookList.size() < 1) {
-      System.out
-      .println("the addressbook list happens to be empty. we suggest you ADD a few CONTACTS before you try our " + str
-        + " operation.");
+      System.out.println(
+        "the addressbook list happens to be empty. we suggest you ADD a few CONTACTS before " + str + "ing people.");
       return;
     }
 
@@ -201,6 +200,31 @@ public class AddressBook {
               System.out.println("that didnt match any choice, try again");
               break;
           }
+          break;
+
+        case "count":
+          switch (choice) {
+            case "1":
+            case "city":
+              countByCity();
+              break;
+
+            case "2":
+            case "state":
+              countByState();
+              break;
+
+            case "3":
+            case "quit":
+              choice = "quit";
+              System.out.println("quitting " + str + " menu...");
+              break;
+
+            default:
+              System.out.println("that didnt match any choice, try again");
+              break;
+          }
+          break;
 
       }
     } while (!choice.equals("quit"));
@@ -258,10 +282,30 @@ public class AddressBook {
 
     for(String state : stateList) {
       System.out.print("people from state '" + state + "': ");
-      AddressBook.stateDictionary.entrySet().stream().filter(entry -> entry.getValue().equalsIgnoreCase(state))
-      .forEach(entry -> System.out.print(entry.getKey() + ", "));
+      AddressBook.stateDictionary.entrySet().stream().filter(en -> en.getValue().equalsIgnoreCase(state))
+      .forEach(en -> System.out.print(en.getKey() + ", "));
       System.out.println();
 
+    }
+  }
+
+  private void countByCity() {
+    List<String> cityList = AddressBook.cityDictionary.values().stream().distinct().collect(Collectors.toList());
+
+    for(String city : cityList) {
+      System.out.print("number of people from city '" + city + "': ");
+      System.out.println(
+        AddressBook.cityDictionary.entrySet().stream().filter(en -> en.getValue().equalsIgnoreCase(city)).count());
+    }
+  }
+
+  private void countByState() {
+    List<String> stateList = AddressBook.stateDictionary.values().stream().distinct().collect(Collectors.toList());
+
+    for(String state : stateList) {
+      System.out.print("number of people from state '" + state + "': ");
+      System.out.println(
+        AddressBook.stateDictionary.entrySet().stream().filter(en -> en.getValue().equalsIgnoreCase(state)).count());
     }
   }
 

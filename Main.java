@@ -15,7 +15,7 @@ public class Main {
 
     while (!choice.equals("quit")) {
       System.out.print(
-        "\nMain Menu \n1. create \n2. edit \n3. delete \n4. view \n5. search persons \n6. display persons \n7. quit \nEnter your choice: ");
+        "\nMain Menu \n1. create \n2. edit \n3. delete \n4. view \n5. search persons \n6. display persons \n7. count \n8. quit \nEnter your choice: ");
       choice = SC.nextLine().trim().toLowerCase();
 
       switch (choice) {
@@ -67,8 +67,14 @@ public class Main {
           a.searchDisplayMenu(addressBookList, "display");
           break;
 
-        case "quit":
+        case "count":
         case "7":
+          a = new AddressBook();
+          a.searchDisplayMenu(addressBookList, "count");
+          break;
+
+        case "quit":
+        case "8":
           choice = "quit";
           break;
 
